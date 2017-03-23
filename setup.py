@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name='elected-targets',
     version='0.1',
-    author='MoveOn.org',
+    author='Sandra Chung, Scott Reynen',
     author_email='opensource@moveon.org',
     packages=find_packages(),
     include_package_data=True,
