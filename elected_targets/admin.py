@@ -1,7 +1,10 @@
 # from django import forms
 from django.contrib import admin
 from .models import Housemem, Senatemem
-from moveon_theme.filters import DropdownFilter
+try:
+    from moveon_theme.filters import DropdownFilter
+except ImportError:
+    DropdownFilter = None
 
 class HousememAdmin(admin.ModelAdmin):
     readonly_fields = [
@@ -14,7 +17,7 @@ class HousememAdmin(admin.ModelAdmin):
         'fax', 'building', 'suite', 'leadership', 'plus4', 'web', 'tweet'
     ]
     list_display = ('district', 'first', 'last')
-    list_filter = (('state', DropdownFilter),)
+    list_filter = (('state', DropdownFilter),) if DropdownFilter else ['state']
     list_sort = ['district', 'first', 'last']
     search_fields = ['first', 'last']
 
@@ -31,7 +34,7 @@ class SenatememAdmin(admin.ModelAdmin):
         'suite', 'leadership', 'plus4', 'web', 'tweet'
     ]
     list_display = ('state', 'first', 'last')
-    list_filter = (('state', DropdownFilter),)
+    list_filter = (('state', DropdownFilter),) if DropdownFilter else ['state']
     list_sort = ['state', 'first', 'last']
     search_fields = ['first', 'last']
 
