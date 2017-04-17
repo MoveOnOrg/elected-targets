@@ -31,6 +31,7 @@ class Governor(models.Model):
         managed = False
         db_table = 'governor'
 
+
 class Housemem(models.Model):
     title_abbrev = 'Rep.'
     target_column = 'district' # to match to target_id
@@ -67,7 +68,7 @@ class Housemem(models.Model):
 
 
 class HousememContact(models.Model):
-    district = models.CharField(primary_key=True, max_length=5)
+    district = models.OneToOneField(Housemem, related_name='contact', primary_key=True, db_column='district')
     title = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -76,6 +77,8 @@ class HousememContact(models.Model):
     class Meta:
         managed = False
         db_table = 'housemem_contact'
+        verbose_name = 'Representative Contact'
+
 
 class Senatemem(models.Model):
     title_abbrev = 'Sen.'
@@ -113,6 +116,20 @@ class Senatemem(models.Model):
         db_table = 'senatemem'
         verbose_name = 'Senator'
 
+
+class SenatememContact(models.Model):
+    seat = models.OneToOneField(Senatemem, related_name='contact', primary_key=True, db_column='seat')
+    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    ts = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'senatemem_contact'
+        verbose_name = 'Senator Contact'
+
+
 class Statehousemem(models.Model):
     target_column = 'legislator_id'
     legislator_id = models.CharField(primary_key=True, max_length=6)
@@ -147,6 +164,7 @@ class Statehousemem(models.Model):
         managed = False
         db_table = 'statehousemem'
 
+
 class Statesenatemem(models.Model):
     target_column = 'legislator_id'
     legislator_id = models.CharField(primary_key=True, max_length=6)
@@ -178,7 +196,6 @@ class Statesenatemem(models.Model):
     web = models.CharField(max_length=37, blank=True, null=True)
     state_abbrev = models.CharField(max_length=2, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-
 
     class Meta:
         managed = False
