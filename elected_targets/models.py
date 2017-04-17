@@ -179,7 +179,7 @@ class Statesenatemem(models.Model):
     middlename = models.CharField(
         db_column='middleName', max_length=40, blank=True, null=True
     )  # Field name made lowercase.
-    nickname = models.CharField(blank=True, null=True)
+    nickname = models.CharField(max_length=255, blank=True, null=True)
     suffix = models.CharField(max_length=5, blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, null=True)
     party = models.CharField(max_length=3, blank=True, null=True)
