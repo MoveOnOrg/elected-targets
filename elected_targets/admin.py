@@ -6,17 +6,14 @@ try:
 except ImportError:
     DropdownFilter = None
 
+
 class HousememContactInline(admin.StackedInline):
     fieldsets = (
-        (
-            None,
-            {
-                'fields': ('title', 'name', 'email')
-            }
-        ),
+        (None, {'fields': ('title', 'name', 'email')}),
     )
     model = HousememContact
     extra = 0
+
 
 class HousememAdmin(admin.ModelAdmin):
     readonly_fields = [
@@ -36,17 +33,14 @@ class HousememAdmin(admin.ModelAdmin):
 
 admin.site.register(Housemem, HousememAdmin)
 
+
 class SenateMemContactInline(admin.StackedInline):
     fieldsets = (
-        (
-            None,
-            {
-                'fields': ('title', 'name', 'email')
-            }
-        ),
+        (None, {'fields': ('title', 'name', 'email')}),
     )
     model = SenatememContact
     extra = 0
+
 
 class SenatememAdmin(admin.ModelAdmin):
     readonly_fields = [
