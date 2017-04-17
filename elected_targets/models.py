@@ -1,13 +1,7 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
 
 from django.db import models
+
 
 class Governor(models.Model):
     title_abbrev = 'Gov.'
@@ -31,9 +25,10 @@ class Governor(models.Model):
         managed = False
         db_table = 'governor'
 
+
 class Housemem(models.Model):
     title_abbrev = 'Rep.'
-    target_column = 'district' # to match to target_id
+    target_column = 'district'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
     district = models.CharField(primary_key=True, max_length=5)
     state = models.CharField(max_length=14, blank=True, null=True)
@@ -67,7 +62,10 @@ class Housemem(models.Model):
 
 
 class HousememContact(models.Model):
-    district = models.CharField(primary_key=True, max_length=5)
+    district = models.OneToOneField(
+        Housemem, related_name='contact', primary_key=True,
+        db_column='district'
+    )
     title = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -76,10 +74,12 @@ class HousememContact(models.Model):
     class Meta:
         managed = False
         db_table = 'housemem_contact'
+        verbose_name = 'Representative Contact'
+
 
 class Senatemem(models.Model):
     title_abbrev = 'Sen.'
-    target_column = 'seat' # to match to target_id
+    target_column = 'seat'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
     seat = models.CharField(primary_key=True, max_length=4)
     state = models.CharField(max_length=14, blank=True, null=True)
@@ -87,7 +87,9 @@ class Senatemem(models.Model):
     prefix = models.CharField(max_length=4, blank=True, null=True)
     last = models.CharField(max_length=11, blank=True, null=True)
     first = models.CharField(max_length=11, blank=True, null=True)
-    middlename = models.CharField(db_column='middleName', max_length=7, blank=True, null=True)  # Field name made lowercase.
+    middlename = models.CharField(
+        db_column='middleName', max_length=7, blank=True, null=True
+    )  # Field name made lowercase.
     nickname = models.CharField(max_length=255, blank=True, null=True)
     suffix = models.CharField(max_length=5, blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, null=True)
@@ -112,6 +114,22 @@ class Senatemem(models.Model):
         managed = False
         db_table = 'senatemem'
         verbose_name = 'Senator'
+
+
+class SenatememContact(models.Model):
+    seat = models.OneToOneField(
+        Senatemem, related_name='contact', primary_key=True, db_column='seat'
+    )
+    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    ts = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'senatemem_contact'
+        verbose_name = 'Senator Contact'
+
 
 class Statehousemem(models.Model):
     target_column = 'legislator_id'
@@ -147,6 +165,7 @@ class Statehousemem(models.Model):
         managed = False
         db_table = 'statehousemem'
 
+
 class Statesenatemem(models.Model):
     target_column = 'legislator_id'
     legislator_id = models.CharField(primary_key=True, max_length=6)
@@ -157,8 +176,10 @@ class Statesenatemem(models.Model):
     prefix = models.CharField(max_length=4, blank=True, null=True)
     last = models.CharField(max_length=40, blank=True, null=True)
     first = models.CharField(max_length=40, blank=True, null=True)
-    middlename = models.CharField(db_column='middleName', max_length=40, blank=True, null=True)  # Field name made lowercase.
-    nickname = models.CharField(blank=True, null=True)
+    middlename = models.CharField(
+        db_column='middleName', max_length=40, blank=True, null=True
+    )  # Field name made lowercase.
+    nickname = models.CharField(max_length=255, blank=True, null=True)
     suffix = models.CharField(max_length=5, blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, null=True)
     party = models.CharField(max_length=3, blank=True, null=True)
@@ -178,7 +199,6 @@ class Statesenatemem(models.Model):
     web = models.CharField(max_length=37, blank=True, null=True)
     state_abbrev = models.CharField(max_length=2, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-
 
     class Meta:
         managed = False
