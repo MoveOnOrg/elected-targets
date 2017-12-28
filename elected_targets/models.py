@@ -1,10 +1,70 @@
 from __future__ import unicode_literals
 
+import re
+
 from django.db import models
+from django.db.models.expressions import RawSQL
+
+class Target(models.Model):
+
+    class Meta:
+        abstract = True
+
+    state_column = 'state_abbrev'
+    target_column = ''
+    title_abbrev = ''
+
+    def full_title(self):
+        parts = []
+        if self.title_abbrev:
+            parts.append(self.title_abbrev)
+        parts.extend([self.first, self.last])
+        target = self.target_name()
+        if target:
+            parts.append('({})'.format(target))
+        return ' '.join(parts)
+
+    def target_name(self):
+        target = getattr(self, self.target_column, '')
+        return re.sub(r'(_|-0+)', '-', target)
+
+    def target_type(self):
+        return self._meta.db_table
+
+    def target_id(self):
+        return getattr(self, self.target_column, '')
+
+    @classmethod
+    def name_like(cls, query, name):
+        return query.annotate(
+            name=RawSQL('concat(first, \' \', last)',[])).filter(name__contains=name)
+
+    @classmethod
+    def search(cls, name=None, state=None, **kw):
+        query = cls.objects
+        queryargs = {}
+        if state:
+            queryargs[cls.state_column] = state
+        if kw:
+            queryargs.update(kw)
+        if queryargs:
+            query = query.filter(**queryargs)
+        if name:
+            query = cls.name_like(query, name)
+        return query
+
+    @classmethod
+    def targetinfo(cls, query):
+        """
+        target_id, full_title, target_type = <table name>
+        needs columns: first, last, target_column
+        """
+        return query.only('first', 'last', cls.target_column)
 
 
-class Governor(models.Model):
+class Governor(Target):
     title_abbrev = 'Gov.'
+    state_column = 'state'
     target_column = 'state'
     state = models.CharField(primary_key=True, max_length=2)
     governor = models.CharField(max_length=255)
@@ -25,8 +85,23 @@ class Governor(models.Model):
         managed = False
         db_table = 'governor'
 
+    def full_title(self):
+        return ' '.join([self.title_abbrev, self.governor])
 
-class Housemem(models.Model):
+    @classmethod
+    def name_like(cls, query, name):
+        return query.filter(governor__contains=name)
+
+    @classmethod
+    def targetinfo(cls, query):
+        """
+        target_id, full_title, target_type = <table name>
+        needs columns: first, last, target_column
+        """
+        return query.only('governor', cls.target_column)
+
+
+class Housemem(Target):
     title_abbrev = 'Rep.'
     target_column = 'district'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
@@ -77,7 +152,7 @@ class HousememContact(models.Model):
         verbose_name = 'Representative Contact'
 
 
-class Senatemem(models.Model):
+class Senatemem(Target):
     title_abbrev = 'Sen.'
     target_column = 'seat'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
@@ -131,7 +206,7 @@ class SenatememContact(models.Model):
         verbose_name = 'Senator Contact'
 
 
-class Statehousemem(models.Model):
+class Statehousemem(Target):
     target_column = 'legislator_id'
     legislator_id = models.CharField(primary_key=True, max_length=6)
     district = models.CharField(max_length=15)
@@ -166,7 +241,7 @@ class Statehousemem(models.Model):
         db_table = 'statehousemem'
 
 
-class Statesenatemem(models.Model):
+class Statesenatemem(Target):
     target_column = 'legislator_id'
     legislator_id = models.CharField(primary_key=True, max_length=6)
     seat = models.CharField(max_length=15)
