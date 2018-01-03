@@ -322,7 +322,7 @@ class ZipStateBodyDistrict(models.Model):
         return rv
 
 
-class ZipCongresionalDistrict(models.Model):
+class ZipCongressionalDistrict(models.Model):
     class Meta:
         managed = False
         db_table = 'zip_to_district'
