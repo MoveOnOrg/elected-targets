@@ -14,15 +14,20 @@ class Target(models.Model):
     target_column = ''
     title_abbrev = ''
 
-    def full_title(self):
+    def full_title(self, use_abbrev=False):
         parts = []
-        if self.title_abbrev:
+        if not use_abbrev and self.title_name:
+            parts.append(self.title_name)
+        elif self.title_abbrev:
             parts.append(self.title_abbrev)
         parts.extend([self.first, self.last])
         target = self.target_name()
         if target:
             parts.append('({})'.format(target))
         return ' '.join(parts)
+
+    def short_title(self):
+        return self.full_title(use_abbrev=True)
 
     def target_name(self):
         target = getattr(self, self.target_column, '')
@@ -64,6 +69,7 @@ class Target(models.Model):
 
 class Governor(Target):
     title_abbrev = 'Gov.'
+    title_name = 'Governor'
     state_column = 'state'
     target_column = 'state'
     state = models.CharField(primary_key=True, max_length=2)
@@ -86,6 +92,9 @@ class Governor(Target):
         db_table = 'governor'
 
     def full_title(self):
+        return ' '.join([self.title_name, self.governor])
+
+    def short_title(self):
         return ' '.join([self.title_abbrev, self.governor])
 
     @classmethod
@@ -103,6 +112,7 @@ class Governor(Target):
 
 class Housemem(Target):
     title_abbrev = 'Rep.'
+    title_name = 'Representative'
     target_column = 'district'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
     district = models.CharField(primary_key=True, max_length=5)
@@ -154,6 +164,7 @@ class HousememContact(models.Model):
 
 class Senatemem(Target):
     title_abbrev = 'Sen.'
+    title_name = 'Senator'
     target_column = 'seat'  # to match to target_id
     congress_id = models.IntegerField(blank=True, null=True)
     seat = models.CharField(primary_key=True, max_length=4)
