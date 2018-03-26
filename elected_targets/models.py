@@ -29,6 +29,24 @@ class Target(models.Model):
     def short_title(self):
         return self.full_title(use_abbrev=True)
 
+    @property
+    def title_name(self):
+        if hasattr(self, 'title'):
+            return self.title
+        else:
+            return 'Representative'
+
+    @property
+    def title_abbrev(self):
+        mapping = {'Representative': 'Rep.',
+                   'Senator': 'Sen.',
+                   'Governor': 'Gov.',
+                   'Delegate': 'Del.'}
+        if hasattr(self, 'title') and self.title in mapping:
+            return mapping[self.title]
+        else:
+            return 'Rep.'
+
     def target_name(self):
         target = getattr(self, self.target_column, '')
         return re.sub(r'(_|-0+)', '-', target)
