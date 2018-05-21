@@ -106,7 +106,6 @@ class Governor(Target):
     gender = models.CharField(max_length=1, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'governor'
 
     def full_title(self):
@@ -159,7 +158,6 @@ class Housemem(Target):
     state_abbrev = models.CharField(max_length=2)
 
     class Meta:
-        managed = False
         db_table = 'housemem'
         verbose_name = 'Representative'
 
@@ -175,7 +173,6 @@ class HousememContact(models.Model):
     ts = models.DateTimeField()
 
     class Meta:
-        managed = False
         db_table = 'housemem_contact'
         verbose_name = 'Representative Contact'
 
@@ -215,7 +212,6 @@ class Senatemem(Target):
     state_abbrev = models.CharField(max_length=2)
 
     class Meta:
-        managed = False
         db_table = 'senatemem'
         verbose_name = 'Senator'
 
@@ -230,7 +226,6 @@ class SenatememContact(models.Model):
     ts = models.DateTimeField()
 
     class Meta:
-        managed = False
         db_table = 'senatemem_contact'
         verbose_name = 'Senator Contact'
 
@@ -266,7 +261,6 @@ class Statehousemem(Target):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'statehousemem'
 
 
@@ -305,13 +299,11 @@ class Statesenatemem(Target):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'statesenatemem'
 
 
 class ZipStateBodyDistrict(models.Model):
     class Meta:
-        managed = False
         db_table = 'zip_to_statebody_district'
 
     zip = models.CharField(max_length=5, db_index=True)
@@ -353,7 +345,6 @@ class ZipStateBodyDistrict(models.Model):
 
 class ZipCongressionalDistrict(models.Model):
     class Meta:
-        managed = False
         db_table = 'zip_to_district'
 
     zip = models.CharField(max_length=5, db_index=True, primary_key=True)
