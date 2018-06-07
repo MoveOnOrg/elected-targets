@@ -49,7 +49,7 @@ class Target(models.Model):
 
     def target_name(self):
         target = getattr(self, self.target_column, '')
-        return re.sub(r'(_|-0+)', '-', target)
+        return re.sub(r'(_0+|-0+|_)', '-', target)
 
     def target_type(self):
         return self._meta.db_table
@@ -231,7 +231,7 @@ class SenatememContact(models.Model):
 
 
 class Statehousemem(Target):
-    target_column = 'legislator_id'
+    target_column = 'district'
     legislator_id = models.CharField(primary_key=True, max_length=6)
     district = models.CharField(max_length=15)
     state = models.CharField(max_length=20, blank=True, null=True)
@@ -265,7 +265,7 @@ class Statehousemem(Target):
 
 
 class Statesenatemem(Target):
-    target_column = 'legislator_id'
+    target_column = 'seat'
     legislator_id = models.CharField(primary_key=True, max_length=6)
     seat = models.CharField(max_length=15)
     state = models.CharField(max_length=20, blank=True, null=True)
