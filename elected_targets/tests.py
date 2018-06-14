@@ -16,7 +16,7 @@ class ElectedTargetsTestCase(TestCase):
         test_targets = {
             '22466': ('Statesenatemem','CO-20'),
             '22467': ('Statesenatemem','CO-20'),
-            '40362': ('Statehousemem', 'CO-2'),
+            '040362': ('Statehousemem', 'CO-2'),
             'GA_1': ('Senatemem', 'GA-1'),
             'GA_01': ('Housemem','GA-1'),
         }
