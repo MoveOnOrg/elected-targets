@@ -266,6 +266,9 @@ class Statehousemem(Target):
     class Meta:
         db_table = 'statehousemem'
 
+    def target_name(self):
+        return re.sub(r'(_0+|-0+|_)', '-', self.district)
+
 
 class Statesenatemem(Target):
     target_column = 'legislator_id'
@@ -303,6 +306,9 @@ class Statesenatemem(Target):
 
     class Meta:
         db_table = 'statesenatemem'
+
+    def target_name(self):
+        return re.sub(r'(_0+|-0+|_)', '-', self.seat)
 
 
 class ZipStateBodyDistrict(models.Model):
