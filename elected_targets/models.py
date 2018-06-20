@@ -49,7 +49,10 @@ class Target(models.Model):
 
     def target_name(self):
         target = getattr(self, self.target_column, '')
-        return re.sub(r'(_|-0+)', '-', target)
+        return re.sub(r'(_0+|-0+|_)', '-', target)
+        # first replace any instances of _0, _00, _000, etc
+        # then replace any remaining instances of -0, -00, -00, etc
+        # finally replace any remaining instances of _
 
     def target_type(self):
         return self._meta.db_table
@@ -263,6 +266,9 @@ class Statehousemem(Target):
     class Meta:
         db_table = 'statehousemem'
 
+    def target_name(self):
+        return re.sub(r'(_0+|-0+|_)', '-', self.district)
+
 
 class Statesenatemem(Target):
     target_column = 'legislator_id'
@@ -300,6 +306,9 @@ class Statesenatemem(Target):
 
     class Meta:
         db_table = 'statesenatemem'
+
+    def target_name(self):
+        return re.sub(r'(_0+|-0+|_)', '-', self.seat)
 
 
 class ZipStateBodyDistrict(models.Model):
