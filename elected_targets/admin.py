@@ -68,7 +68,7 @@ class StatesenatememAdmin(admin.ModelAdmin):
         'suite', 'leadership', 'plus4', 'web'
     ]
     fields = [
-        'first', 'last', 'email', 'nickname', 'gender', 'party',
+        'first', 'last', 'email', 'nickname', 'gender', 'party', 
         'state', 'prefix', 'suffix', 'phone', 'fax',
         'suite', 'leadership', 'plus4', 'web'
     ]
@@ -103,7 +103,8 @@ class GovernorAdmin(admin.ModelAdmin):
         'state', 'phone', 'fax'
     ]
     fields = [
-        'first', 'last', 'email', 'gender', 'party','state', 'phone', 'fax'
+        'first', 'last', 'email', 'gender', 'party', 'state', 'phone', 'fax', 
+        'facebook', 'twitter'
     ]
     list_display = ('state', 'first', 'last')
     list_filter = (('state', DropdownFilter),) if DropdownFilter else ['state']
